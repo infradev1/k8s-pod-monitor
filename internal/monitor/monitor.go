@@ -2,6 +2,7 @@ package monitor
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log"
 	"path/filepath"
@@ -12,9 +13,15 @@ import (
 	"k8s.io/client-go/util/homedir"
 )
 
-// WatchPods scans all pods and logs any with restart counts > 0
-func WatchPods() {
-	// Load kubeconfig from default location
+type PodRestartInfo struct {
+	Namespace     string `json:"namespace"`
+	PodName       string `json:"pod_name"`
+	ContainerName string `json:"container_name"`
+	Restarts      int32  `json:"restart_count"`
+}
+
+// WatchPods checks for container restarts and prints them in the selected format
+func WatchPods(namespace, outputFormat string) {
 	kubeconfig := filepath.Join(homedir.HomeDir(), ".kube", "config")
 
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
@@ -27,28 +34,37 @@ func WatchPods() {
 		log.Fatalf("Error creating Kubernetes client: %v", err)
 	}
 
-	namespace := "" // all namespaces; you can parameterize this later
-
-	fmt.Printf("Scanning for pod restarts in all namespaces...\n\n")
-
 	pods, err := clientset.CoreV1().Pods(namespace).List(context.TODO(), v1.ListOptions{})
 	if err != nil {
 		log.Fatalf("Error listing pods: %v", err)
 	}
 
-	found := false
+	var results []PodRestartInfo
 
 	for _, pod := range pods.Items {
 		for _, cs := range pod.Status.ContainerStatuses {
 			if cs.RestartCount > 0 {
-				found = true
-				fmt.Printf("[RESTART] %s/%s - Container: %s - Restarts: %d\n",
-					pod.Namespace, pod.Name, cs.Name, cs.RestartCount)
+				results = append(results, PodRestartInfo{
+					Namespace:     pod.Namespace,
+					PodName:       pod.Name,
+					ContainerName: cs.Name,
+					Restarts:      cs.RestartCount,
+				})
 			}
 		}
 	}
 
-	if !found {
-		fmt.Println("✅ No restarts found.")
+	if outputFormat == "json" {
+		output, _ := json.MarshalIndent(results, "", "  ")
+		fmt.Println(string(output))
+	} else {
+		if len(results) == 0 {
+			fmt.Println("✅ No pod restarts found.")
+		} else {
+			for _, r := range results {
+				fmt.Printf("[RESTART] %s/%s - Container: %s - Restarts: %d\n",
+					r.Namespace, r.PodName, r.ContainerName, r.Restarts)
+			}
+		}
 	}
 }
