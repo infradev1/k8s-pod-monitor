@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: crashy
+  namespace: default
+spec:
+  containers:
+  - name: crash
+    image: busybox
+    args:
+    - /bin/sh
+    - -c
+    - "exit 1"
+    restartPolicy: Always

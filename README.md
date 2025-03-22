@@ -32,3 +32,6 @@ Ideal for DevOps engineers, SREs, or platform teams who want real-time visibilit
 ```bash
 git clone https://github.com/yourusername/k8s-pod-monitor.git
 cd k8s-pod-monitor
+make setup-kind      # creates KinD cluster + crashloop pod
+make run             # runs CLI against it
+make delete-kind     # cleanup
