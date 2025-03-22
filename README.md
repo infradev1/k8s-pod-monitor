@@ -17,7 +17,8 @@ Ideal for DevOps engineers, SREs, or platform teams who want real-time visibilit
 
  ## Roadmap
 
-- Add --namespace and --interval flags
+- Add --namespace, --interval, --min-restarts, --json flags
+- Add subcommands: watch, summary, slack-alert, etc.
 - Slack or webhook alerts
 - CrashLoopBackOff filter
 - Unit tests

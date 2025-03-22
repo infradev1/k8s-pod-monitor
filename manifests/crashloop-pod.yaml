@@ -11,4 +11,4 @@ spec:
     - /bin/sh
     - -c
     - "exit 1"
-    restartPolicy: Always
+  restartPolicy: Always
