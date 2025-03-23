@@ -14,6 +14,7 @@ var outputFormat string
 var minRestarts uint
 var watch bool
 var interval uint32
+var exit bool
 
 var rootCmd = &cobra.Command{
 	Use:   "pod-monitor",
@@ -26,6 +27,7 @@ var rootCmd = &cobra.Command{
 			MinimumRestarts: minRestarts,
 			Watch:           watch,
 			Interval:        interval,
+			ExitWithError:   exit,
 		})
 	},
 }
@@ -37,6 +39,7 @@ func Execute() {
 	rootCmd.PersistentFlags().UintVar(&minRestarts, "min-restarts", 1, "Minimum number of pod restarts to monitor (default: 1)")
 	rootCmd.PersistentFlags().BoolVarP(&watch, "watch", "w", false, "Watches the state of pods continuously (default: false)")
 	rootCmd.PersistentFlags().Uint32VarP(&interval, "interval", "i", 5, "Logs the state of pods every i seconds (default: 5)")
+	rootCmd.PersistentFlags().BoolVarP(&exit, "exit", "e", false, "For CI/CD use: Exits with error if pod restarts are found (default: false)")
 
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
