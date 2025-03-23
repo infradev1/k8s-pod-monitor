@@ -10,7 +10,8 @@ Ideal for DevOps engineers, SREs, or platform teams who want real-time visibilit
 ## 🚀 Features
 
 - Watches all pods across namespaces (or a specific namespace)
-- Detects and logs container restarts
+- Detects and logs pod restarts
+- Detects and logs waiting/terminated control plane containers (if -n kube-system)
 - Supports `~/.kube/config` (works out of the box with KinD, Minikube, or EKS)
 - Built with `client-go` and `cobra`
 
@@ -18,10 +19,10 @@ Ideal for DevOps engineers, SREs, or platform teams who want real-time visibilit
 
  ## Roadmap
 
-- Add --interval flag
-- Add subcommands: watch, summary, slack-alert, etc.
+- Add subcommands: summary, alert, etc.
 - Slack or webhook alerts
-- CrashLoopBackOff filter
+- Additional filters
+- Self-healing
 - Helm chart for K8s deployment
 
 ---

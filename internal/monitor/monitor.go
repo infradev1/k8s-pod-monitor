@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"path/filepath"
+	"time"
 
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -26,6 +27,8 @@ type UserInput struct {
 	Namespace       string
 	OutputFormat    string
 	MinimumRestarts uint
+	Watch           bool
+	Interval        uint32
 }
 
 // WatchPods checks for container restarts and prints them in the selected format
@@ -81,17 +84,20 @@ func WatchPods(args *UserInput) {
 
 	filteredResults := FilterRestartedPods(results, args.MinimumRestarts)
 
-	if args.OutputFormat == "json" {
+	if len(filteredResults) == 0 {
+		fmt.Println("✅ No pod restarts found.")
+	} else if args.OutputFormat == "json" {
 		output, _ := json.MarshalIndent(filteredResults, "", "  ")
 		fmt.Println(string(output))
 	} else {
-		if len(filteredResults) == 0 {
-			fmt.Println("✅ No pod restarts found.")
-		} else {
-			for _, r := range filteredResults {
-				fmt.Printf("[RESTART] %s/%s - Container: %s - Restarts: %d\n",
-					r.Namespace, r.PodName, r.ContainerName, r.Restarts)
-			}
+		for _, r := range filteredResults {
+			fmt.Printf("[RESTART] %s/%s - Container: %s - Restarts: %d\n",
+				r.Namespace, r.PodName, r.ContainerName, r.Restarts)
 		}
+	}
+
+	if args.Watch {
+		time.Sleep(time.Duration(args.Interval) * time.Second)
+		WatchPods(args)
 	}
 }
