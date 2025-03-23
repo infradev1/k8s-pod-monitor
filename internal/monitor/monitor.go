@@ -17,7 +17,7 @@ type PodRestartInfo struct {
 	Namespace     string `json:"namespace"`
 	PodName       string `json:"pod_name"`
 	ContainerName string `json:"container_name"`
-	Restarts      int32  `json:"restart_count"`
+	Restarts      uint   `json:"restart_count"`
 }
 
 // Tags are metadata — they control how the struct is serialized/deserialized (e.g., to/from JSON, YAML, DB rows).
@@ -56,20 +56,22 @@ func WatchPods(args *UserInput) {
 					Namespace:     pod.Namespace,
 					PodName:       pod.Name,
 					ContainerName: cs.Name,
-					Restarts:      cs.RestartCount,
+					Restarts:      uint(cs.RestartCount),
 				})
 			}
 		}
 	}
 
+	filteredResults := FilterRestartedPods(results, args.MinimumRestarts)
+
 	if args.OutputFormat == "json" {
-		output, _ := json.MarshalIndent(results, "", "  ")
+		output, _ := json.MarshalIndent(filteredResults, "", "  ")
 		fmt.Println(string(output))
 	} else {
-		if len(results) == 0 {
+		if len(filteredResults) == 0 {
 			fmt.Println("✅ No pod restarts found.")
 		} else {
-			for _, r := range results {
+			for _, r := range filteredResults {
 				fmt.Printf("[RESTART] %s/%s - Container: %s - Restarts: %d\n",
 					r.Namespace, r.PodName, r.ContainerName, r.Restarts)
 			}

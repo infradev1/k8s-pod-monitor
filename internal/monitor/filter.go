@@ -1,6 +1,6 @@
 package monitor
 
-func FilterRestartedPods(pods []PodRestartInfo, minRestarts int32) []PodRestartInfo {
+func FilterRestartedPods(pods []PodRestartInfo, minRestarts uint) []PodRestartInfo {
 	var filtered []PodRestartInfo
 	for _, pod := range pods {
 		if pod.Restarts >= minRestarts {

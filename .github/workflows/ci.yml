@@ -53,10 +53,11 @@ jobs:
           make clean
           make run
 
-      - name: Run CLI (text output)
+      - name: Run CLI with flags
         run: |
           make build
           ./pod-monitor -o text
+          ./pod-monitor -o json -n default --min-restarts=10
 
       - name: Teardown KinD cluster
         if: always()
