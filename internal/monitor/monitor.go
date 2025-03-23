@@ -20,8 +20,16 @@ type PodRestartInfo struct {
 	Restarts      int32  `json:"restart_count"`
 }
 
+// Tags are metadata — they control how the struct is serialized/deserialized (e.g., to/from JSON, YAML, DB rows).
+
+type UserInput struct {
+	Namespace       string
+	OutputFormat    string
+	MinimumRestarts uint
+}
+
 // WatchPods checks for container restarts and prints them in the selected format
-func WatchPods(namespace, outputFormat string) {
+func WatchPods(args *UserInput) {
 	kubeconfig := filepath.Join(homedir.HomeDir(), ".kube", "config")
 
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfig)
@@ -34,7 +42,7 @@ func WatchPods(namespace, outputFormat string) {
 		log.Fatalf("Error creating Kubernetes client: %v", err)
 	}
 
-	pods, err := clientset.CoreV1().Pods(namespace).List(context.TODO(), v1.ListOptions{})
+	pods, err := clientset.CoreV1().Pods(args.Namespace).List(context.TODO(), v1.ListOptions{})
 	if err != nil {
 		log.Fatalf("Error listing pods: %v", err)
 	}
@@ -54,7 +62,7 @@ func WatchPods(namespace, outputFormat string) {
 		}
 	}
 
-	if outputFormat == "json" {
+	if args.OutputFormat == "json" {
 		output, _ := json.MarshalIndent(results, "", "  ")
 		fmt.Println(string(output))
 	} else {

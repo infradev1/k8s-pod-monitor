@@ -49,7 +49,9 @@ jobs:
         run: make setup-kind
 
       - name: Run Go CLI (json output)
-        run: make run
+        run: |
+          make clean
+          make run
 
       - name: Run CLI (text output)
         run: |

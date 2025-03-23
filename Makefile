@@ -1,6 +1,9 @@
 setup-kind:
 	bash scripts/setup-kind.sh
 
+clean:
+	go mod tidy
+
 run:
 	go run main.go
 
