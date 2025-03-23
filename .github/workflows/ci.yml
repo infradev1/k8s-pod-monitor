@@ -52,7 +52,9 @@ jobs:
         run: make run
 
       - name: Run CLI (text output)
-        run: ./pod-monitor -o text
+        run: |
+          make build
+          ./pod-monitor -o text
 
       - name: Teardown KinD cluster
         if: always()
