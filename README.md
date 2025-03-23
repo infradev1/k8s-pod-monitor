@@ -20,12 +20,12 @@ Ideal for DevOps engineers, SREs, or platform teams who want real-time visibilit
 
 ## 🔧 Flags
 
---namespace, -n	    Namespace to scan ("" = all namespaces)
---output, -o	    json or text
---min-restarts	    Minimum restarts to report (default 1)
---watch, -w	        Continuously monitor pods
---interval, -i	    Polling interval in seconds
---exit, -e	        Exit with 1 if restarts are found
+* --namespace, -n	    Namespace to scan ("" = all namespaces)
+* --output, -o	    json or text
+* --min-restarts	    Minimum restarts to report (default 1)
+* --watch, -w	        Continuously monitor pods
+* --interval, -i	    Polling interval in seconds
+* --exit, -e	        Exit with 1 if restarts are found
 
 ---
 
