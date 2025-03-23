@@ -47,6 +47,23 @@ func WatchPods(args *UserInput) {
 		log.Fatalf("Error listing pods: %v", err)
 	}
 
+	if args.Namespace == "kube-system" {
+		for _, pod := range pods.Items {
+			for _, cs := range pod.Status.ContainerStatuses {
+				if cs.State.Waiting != nil || cs.State.Terminated != nil {
+					log.Printf("[CONTROL PLANE WARNING] Pod: %s - Status: %s\n", pod.Name, pod.Status.Phase)
+					if cs.State.Waiting != nil {
+						log.Fatalf("Container Waiting Reason: %s\n", cs.State.Waiting.Reason)
+					}
+					if cs.State.Terminated != nil {
+						log.Fatalf("Container Terminated Reason: %s (Exit %d)\n", cs.State.Terminated.Reason, cs.State.Terminated.ExitCode)
+					}
+				}
+				// TODO: Replace with SNS email notification
+			}
+		}
+	}
+
 	var results []PodRestartInfo
 
 	for _, pod := range pods.Items {

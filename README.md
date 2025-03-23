@@ -1,8 +1,9 @@
 # Kubernetes Pod Monitor CLI
 
 A lightweight Go-based CLI tool that watches all pods in a Kubernetes cluster and logs any containers that have restarted.
+If --namespace=kube-system, it monitors the health of the control plane static pods.
 
-Ideal for DevOps engineers, SREs, or platform teams who want real-time visibility into pod restarts for troubleshooting or automation.
+Ideal for DevOps engineers, SREs, or platform teams who want real-time visibility into pod health for troubleshooting or automation.
 
 ---
 
@@ -17,11 +18,11 @@ Ideal for DevOps engineers, SREs, or platform teams who want real-time visibilit
 
  ## Roadmap
 
-- Add --interval, --min-restarts flags
+- Add --interval flag
 - Add subcommands: watch, summary, slack-alert, etc.
 - Slack or webhook alerts
 - CrashLoopBackOff filter
-- Dockerfile + Helm chart for K8s deployment
+- Helm chart for K8s deployment
 
 ---
 
