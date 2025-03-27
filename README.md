@@ -1,5 +1,7 @@
 # Kubernetes Pod Monitor CLI
 
+[![CI](https://github.com/CarlosLaraFP/k8s-pod-monitor/actions/workflows/ci.yml/badge.svg)](https://github.com/CarlosLaraFP/k8s-pod-monitor/actions)
+
 A lightweight Go CLI tool that detects restarting or failed pods in your Kubernetes cluster — including control plane components.
 
 Ideal for DevOps engineers, SREs, or platform teams who want real-time visibility into pod health for troubleshooting or automation.

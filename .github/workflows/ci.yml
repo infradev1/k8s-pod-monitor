@@ -1,4 +1,4 @@
-name: Go CLI for Kubernetes pod monitoring
+name: CI
 
 on:
   push:
